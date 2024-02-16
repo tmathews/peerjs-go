@@ -7,7 +7,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-//Connection shared interface
+// Connection shared interface
 type Connection interface {
 	GetType() string
 	GetID() string

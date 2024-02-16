@@ -4,7 +4,7 @@ import (
 	"github.com/pion/webrtc/v3"
 )
 
-//MediaStreamTrack interaface that wraps together TrackLocal and TrackRemote
+// MediaStreamTrack interaface that wraps together TrackLocal and TrackRemote
 type MediaStreamTrack interface {
 	// ID is the unique identifier for this Track. This should be unique for the
 	// stream, but doesn't have to globally unique. A common example would be 'audio' or 'video'

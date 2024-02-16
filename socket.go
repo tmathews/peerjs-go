@@ -29,21 +29,19 @@ func NewSocket(opts Options) *Socket {
 		log:     createLogger("socket", opts.Debug),
 	}
 	s.opts = opts
-	s.disconnected = true
 	return s
 }
 
 // Socket abstract websocket exposing an event emitter like interface
 type Socket struct {
 	emitter.Emitter
-	id           string
-	opts         Options
-	baseURL      string
-	disconnected bool
-	conn         *websocket.Conn
-	log          *logrus.Entry
-	mutex        sync.Mutex
-	wsPingTimer  *time.Timer
+	id          string
+	opts        Options
+	baseURL     string
+	conn        *websocket.Conn
+	log         *logrus.Entry
+	mutex       sync.Mutex
+	wsPingTimer *time.Timer
 }
 
 func (s *Socket) buildBaseURL() string {
@@ -102,7 +100,7 @@ func (s *Socket) sendHeartbeat() {
 // Start initiate the connection
 func (s *Socket) Start(id string, token string) error {
 
-	if !s.disconnected {
+	if s.conn != nil {
 		return nil
 	}
 
@@ -119,8 +117,7 @@ func (s *Socket) Start(id string, token string) error {
 	s.conn = c
 
 	s.conn.SetCloseHandler(func(code int, text string) error {
-		// s.log.Debug("WS closed")
-		s.disconnected = true
+		s.log.Debug("WS closed")
 		s.conn = nil
 		return nil
 	})
@@ -177,7 +174,7 @@ func (s *Socket) Start(id string, token string) error {
 
 // Close close the websocket connection
 func (s *Socket) Close() error {
-	if s.disconnected {
+	if s.conn == nil {
 		return nil
 	}
 	err := s.conn.WriteMessage(
@@ -192,7 +189,6 @@ func (s *Socket) Close() error {
 		s.log.Warnf("WS close error: %s", err)
 	}
 	s.log.Debug("Closed websocket")
-	s.disconnected = true
 	s.conn = nil
 	return err
 }

@@ -9,10 +9,10 @@ import (
 	"github.com/pion/webrtc/v3"
 )
 
-//MediaChannelIDPrefix the media channel connection id prefix
+// MediaChannelIDPrefix the media channel connection id prefix
 const MediaChannelIDPrefix = "mc_"
 
-//NewMediaConnection create new MediaConnection
+// NewMediaConnection create new MediaConnection
 func NewMediaConnection(id string, peer *Peer, opts ConnectionOptions) (*MediaConnection, error) {
 
 	m := &MediaConnection{
@@ -82,7 +82,7 @@ func (m *MediaConnection) HandleMessage(message *models.Message) error {
 	return nil
 }
 
-//Answer open the media connection with the remote peer
+// Answer open the media connection with the remote peer
 func (m *MediaConnection) Answer(tl webrtc.TrackLocal, options *AnswerOption) {
 
 	if m.localStream != nil {
@@ -110,7 +110,7 @@ func (m *MediaConnection) Answer(tl webrtc.TrackLocal, options *AnswerOption) {
 	m.Open = true
 }
 
-//Close allows user to close connection
+// Close allows user to close connection
 func (m *MediaConnection) Close() error {
 	if m.negotiator != nil {
 		m.negotiator.Cleanup()

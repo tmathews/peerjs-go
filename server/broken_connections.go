@@ -8,7 +8,7 @@ import (
 
 const DefaultCheckInterval = 300
 
-//NewCheckBrokenConnections create a new CheckBrokenConnections
+// NewCheckBrokenConnections create a new CheckBrokenConnections
 func NewCheckBrokenConnections(realm IRealm, opts Options, onClose func(client IClient)) *CheckBrokenConnections {
 	if onClose == nil {
 		onClose = func(client IClient) {}
@@ -22,7 +22,7 @@ func NewCheckBrokenConnections(realm IRealm, opts Options, onClose func(client I
 	}
 }
 
-//CheckBrokenConnections watch for broken connections
+// CheckBrokenConnections watch for broken connections
 type CheckBrokenConnections struct {
 	realm   IRealm
 	opts    Options
@@ -66,7 +66,7 @@ func (b *CheckBrokenConnections) checkConnections() {
 	}
 }
 
-//Stop close the connection checker
+// Stop close the connection checker
 func (b *CheckBrokenConnections) Stop() {
 	if b.ticker == nil {
 		return
@@ -74,7 +74,7 @@ func (b *CheckBrokenConnections) Stop() {
 	b.close <- true
 }
 
-//Start initialize the connection checker
+// Start initialize the connection checker
 func (b *CheckBrokenConnections) Start() {
 
 	b.ticker = time.NewTicker(DefaultCheckInterval * time.Millisecond)

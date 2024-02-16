@@ -6,7 +6,7 @@ import (
 	"github.com/muka/peerjs-go/models"
 )
 
-//NewTransmissionHandler handles transmission of messages
+// NewTransmissionHandler handles transmission of messages
 func NewTransmissionHandler(realm IRealm, opts Options) func(client IClient, message models.IMessage) bool {
 
 	var handle func(client IClient, message models.IMessage) bool

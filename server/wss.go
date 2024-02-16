@@ -20,7 +20,7 @@ type ClientMessage struct {
 	Message *models.Message
 }
 
-//NewWebSocketServer create a new WebSocketServer
+// NewWebSocketServer create a new WebSocketServer
 func NewWebSocketServer(realm IRealm, opts Options) *WebSocketServer {
 	wss := WebSocketServer{
 		Emitter:  emitter.NewEmitter(),
@@ -59,7 +59,7 @@ func (wss *WebSocketServer) Send(data []byte) {
 	}
 }
 
-//onSocketConnection called when a client connect
+// onSocketConnection called when a client connect
 func (wss *WebSocketServer) sendErrorAndClose(conn *websocket.Conn, msg string) error {
 	err := conn.WriteJSON(models.Message{
 		Type: MessageTypeError,
@@ -77,7 +77,6 @@ func (wss *WebSocketServer) sendErrorAndClose(conn *websocket.Conn, msg string) 
 	return nil
 }
 
-//
 func (wss *WebSocketServer) configureWS(conn *websocket.Conn, client IClient) error {
 	client.SetSocket(conn)
 
@@ -87,12 +86,13 @@ func (wss *WebSocketServer) configureWS(conn *websocket.Conn, client IClient) er
 		return nil
 	})
 
+	clientID := client.GetID()
 	closed := false
 	conn.SetCloseHandler(func(code int, text string) error {
 		// if any close error happens, stop the loop and remove the client
 		wss.log.Debugf("Closed connection, cleaning up %s", client.GetID())
-		if client.GetSocket() == conn {
-			wss.realm.RemoveClientByID(client.GetID())
+		if client.GetSocket() == conn { // NOTE note sure why this check is needed, to find out
+			wss.realm.RemoveClientByID(clientID)
 		}
 		conn.Close()
 		wss.Emit(WebsocketEventClose, client)
@@ -108,6 +108,11 @@ func (wss *WebSocketServer) configureWS(conn *websocket.Conn, client IClient) er
 			_, raw, err := conn.ReadMessage()
 			if err != nil {
 				wss.log.Errorf("[%s] Read WS error: %s", client.GetID(), err)
+				// If they disconnected, let's make sure to remove them from
+				// the realm so they can connect again.
+				wss.realm.RemoveClientByID(clientID)
+				conn.Close()
+				wss.Emit(WebsocketEventClose, client)
 				return
 			}
 
@@ -136,7 +141,7 @@ func (wss *WebSocketServer) configureWS(conn *websocket.Conn, client IClient) er
 	return nil
 }
 
-//registerClient
+// registerClient
 func (wss *WebSocketServer) registerClient(conn *websocket.Conn, id, token string) error {
 	// Check concurrent limit
 	clientsCount := len(wss.realm.GetClientsIds())
@@ -164,7 +169,7 @@ func (wss *WebSocketServer) registerClient(conn *websocket.Conn, id, token strin
 	return nil
 }
 
-//onSocketConnection called when a client connect
+// onSocketConnection called when a client connect
 func (wss *WebSocketServer) onSocketConnection(conn *websocket.Conn, r *http.Request) {
 	query := r.URL.Query()
 	id := query.Get("id")

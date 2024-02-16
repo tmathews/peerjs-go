@@ -23,7 +23,7 @@ func RandomToken() string {
 	return string(b)
 }
 
-//ChunckedData wraps a data slice with metadata to assemble back the whole data
+// ChunckedData wraps a data slice with metadata to assemble back the whole data
 type ChunckedData struct {
 	PeerData int    `json:"__peerData"`
 	N        int    `json:"n"`
@@ -31,7 +31,7 @@ type ChunckedData struct {
 	Data     []byte `json:"data"`
 }
 
-//Chunk slices a data payload in a list of ChunckedData
+// Chunk slices a data payload in a list of ChunckedData
 func Chunk(raw []byte) (chunks []ChunckedData) {
 	s := slicer{
 		chunks: chunks,

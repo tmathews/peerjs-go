@@ -16,7 +16,7 @@ type Payload struct {
 	Msg           string                     `json:"msg,omitempty"`
 }
 
-//IMessage message interface
+// IMessage message interface
 type IMessage interface {
 	GetType() string
 	GetSrc() string

@@ -10,7 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-//NewAPI initiate a new API client
+// NewAPI initiate a new API client
 func NewAPI(opts Options) API {
 	return API{
 		opts: opts,
@@ -18,7 +18,7 @@ func NewAPI(opts Options) API {
 	}
 }
 
-//API wrap calls to API server
+// API wrap calls to API server
 type API struct {
 	opts Options
 	log  *logrus.Entry
@@ -66,12 +66,12 @@ func (a *API) req(method string) ([]byte, error) {
 	return body, nil
 }
 
-//RetrieveID retrieve a ID
+// RetrieveID retrieve a ID
 func (a *API) RetrieveID() ([]byte, error) {
 	return a.req("id")
 }
 
-//ListAllPeers return the list of available peers
+// ListAllPeers return the list of available peers
 func (a *API) ListAllPeers() ([]byte, error) {
 	return a.req("peers")
 }

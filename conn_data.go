@@ -83,7 +83,7 @@ type DataConnection struct {
 // 	d.Close()
 // }
 
-//Initialize called by the Negotiator when the DataChannel is ready
+// Initialize called by the Negotiator when the DataChannel is ready
 func (d *DataConnection) Initialize(dc *webrtc.DataChannel) {
 	d.DataChannel = dc
 	d.configureDataChannel()
@@ -177,7 +177,7 @@ func (d *DataConnection) handleDataMessage(msg webrtc.DataChannelMessage) {
  * Exposed functionality for users.
  */
 
-//Close allows user to close connection
+// Close allows user to close connection
 func (d *DataConnection) Close() error {
 
 	d.buffer = nil

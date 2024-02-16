@@ -21,26 +21,26 @@ type IMessageQueue interface {
 	GetMessages() []models.IMessage
 }
 
-//MessageQueue type
+// MessageQueue type
 type MessageQueue struct {
 	lastReadAt int64
 	messages   []models.IMessage
 	mMutex     sync.Mutex
 }
 
-//GetLastReadAt return last message read time
+// GetLastReadAt return last message read time
 func (mq *MessageQueue) GetLastReadAt() int64 {
 	return mq.lastReadAt
 }
 
-//AddMessage add message to queue
+// AddMessage add message to queue
 func (mq *MessageQueue) AddMessage(message models.IMessage) {
 	mq.mMutex.Lock()
 	defer mq.mMutex.Unlock()
 	mq.messages = append(mq.messages, message)
 }
 
-//ReadMessage read last message
+// ReadMessage read last message
 func (mq *MessageQueue) ReadMessage() models.IMessage {
 	if len(mq.messages) > 0 {
 		mq.mMutex.Lock()
@@ -53,7 +53,7 @@ func (mq *MessageQueue) ReadMessage() models.IMessage {
 	return nil
 }
 
-//GetMessages return all queued messages
+// GetMessages return all queued messages
 func (mq *MessageQueue) GetMessages() []models.IMessage {
 	return mq.messages
 }

@@ -4,12 +4,12 @@ import (
 	"github.com/muka/peerjs-go/models"
 )
 
-//IMessageHandler interface for MessageHandler
+// IMessageHandler interface for MessageHandler
 type IMessageHandler interface {
 	Handle(client IClient, message models.IMessage) bool
 }
 
-//NewMessageHandler creates a new MessageHandler
+// NewMessageHandler creates a new MessageHandler
 func NewMessageHandler(realm IRealm, handlersRegistry IHandlersRegistry, opts Options) *MessageHandler {
 
 	if handlersRegistry == nil {
@@ -42,13 +42,13 @@ func NewMessageHandler(realm IRealm, handlersRegistry IHandlersRegistry, opts Op
 	return m
 }
 
-//MessageHandler wrap the message handler
+// MessageHandler wrap the message handler
 type MessageHandler struct {
 	realm            IRealm
 	handlersRegistry IHandlersRegistry
 }
 
-//Handle handles a message
+// Handle handles a message
 func (m *MessageHandler) Handle(client IClient, message models.IMessage) bool {
 	return m.handlersRegistry.Handle(client, message)
 }

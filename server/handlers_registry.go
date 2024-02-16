@@ -4,7 +4,7 @@ import (
 	"github.com/muka/peerjs-go/models"
 )
 
-//Handler wrap a callback
+// Handler wrap a callback
 type Handler func(client IClient, message models.IMessage) bool
 
 // IHandlersRegistry interface for HandlersRegistry
@@ -13,7 +13,7 @@ type IHandlersRegistry interface {
 	Handle(client IClient, message models.IMessage) bool
 }
 
-//NewHandlersRegistry creates a new HandlersRegistry
+// NewHandlersRegistry creates a new HandlersRegistry
 func NewHandlersRegistry() IHandlersRegistry {
 	h := &HandlersRegistry{
 		handlers: make(map[string]Handler),
@@ -34,7 +34,7 @@ func (r *HandlersRegistry) RegisterHandler(messageType string, handler Handler) 
 	r.handlers[messageType] = handler
 }
 
-//Handle handles a message
+// Handle handles a message
 func (r *HandlersRegistry) Handle(client IClient, message models.IMessage) bool {
 	handler, ok := r.handlers[message.GetType()]
 	if !ok {

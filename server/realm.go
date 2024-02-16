@@ -23,7 +23,7 @@ func NewRealm() *Realm {
 	return r
 }
 
-//IRealm interface for Realm
+// IRealm interface for Realm
 type IRealm interface {
 	GetClientsIds() []string
 	GetClientByID(clientID string) IClient
@@ -44,7 +44,7 @@ type Realm struct {
 	mMutex        sync.Mutex
 }
 
-//GetClientsIds return the list of client id
+// GetClientsIds return the list of client id
 func (r *Realm) GetClientsIds() []string {
 	keys := []string{}
 	for key := range r.clients {
@@ -53,7 +53,7 @@ func (r *Realm) GetClientsIds() []string {
 	return keys
 }
 
-//GetClientByID return client by id
+// GetClientByID return client by id
 func (r *Realm) GetClientByID(clientID string) IClient {
 	c, ok := r.clients[clientID]
 	if !ok {
@@ -78,7 +78,7 @@ func (r *Realm) SetClient(client IClient, id string) {
 	r.clients[id] = client
 }
 
-//RemoveClientByID remove a client by id
+// RemoveClientByID remove a client by id
 func (r *Realm) RemoveClientByID(id string) bool {
 	client := r.GetClientByID(id)
 	if client == nil {
