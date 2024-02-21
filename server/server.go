@@ -9,16 +9,13 @@ import (
 
 // New creates a new PeerServer
 func New(opts Options) *PeerServer {
-
 	s := new(PeerServer)
 	s.Emitter = emitter.NewEmitter()
 	s.log = createLogger("peer", opts)
 	s.realm = NewRealm()
 	s.auth = NewAuth(s.realm, opts)
 	s.wss = NewWebSocketServer(s.realm, opts)
-
 	s.http = NewHTTPServer(s.realm, s.auth, s.wss, opts)
-
 	s.checkBrokenConnections = NewCheckBrokenConnections(
 		s.realm,
 		opts,
@@ -26,11 +23,8 @@ func New(opts Options) *PeerServer {
 			s.Emit("disconnect", client)
 		},
 	)
-
 	s.messageExpire = NewMessagesExpire(s.realm, opts, s.http.messageHandler)
-
 	s.initialize()
-
 	return s
 }
 

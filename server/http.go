@@ -62,11 +62,10 @@ func NewHTTPServer(realm IRealm, auth *Auth, wss *WebSocketServer, opts Options)
 	r := mux.NewRouter()
 
 	s := &HTTPServer{
-		opts:   opts,
-		realm:  realm,
-		log:    createLogger("http", opts),
-		router: r,
-		// http:           srv,
+		opts:           opts,
+		realm:          realm,
+		log:            createLogger("http", opts),
+		router:         r,
 		handlers:       []func(http.HandlerFunc) http.HandlerFunc{},
 		messageHandler: NewMessageHandler(realm, nil, opts),
 		auth:           auth,
@@ -164,7 +163,8 @@ func (h *HTTPServer) registerHandlers() error {
 			rw.Header().Add("content-type", "text/html")
 			rw.Write([]byte(h.realm.GenerateClientID()))
 		}).
-		Methods("GET").GetError()
+		Methods("GET").
+		GetError()
 	if err != nil {
 		return err
 	}
@@ -210,57 +210,43 @@ func (h *HTTPServer) registerHandlers() error {
 
 // Start start the HTTP server
 func (h *HTTPServer) Start() error {
-
-	err := h.registerHandlers()
+	var err error
+	h.http, err = newHTTPServer(h)
 	if err != nil {
 		return err
 	}
-
-	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"},
-		AllowCredentials: true,
-	})
-
-	handler := c.Handler(h.router)
-
-	h.http = &http.Server{
-		Addr:           fmt.Sprintf("%s:%d", h.opts.Host, h.opts.Port),
-		Handler:        handler,
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
-		MaxHeaderBytes: 1 << 20,
-	}
-
 	return h.http.ListenAndServe()
 }
 
 // Start start the HTTPS server
 func (h *HTTPServer) StartTLS(certFile, keyFile string) error {
-
-	err := h.registerHandlers()
+	var err error
+	h.http, err = newHTTPServer(h)
 	if err != nil {
 		return err
 	}
-
-	c := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"},
-		AllowCredentials: true,
-	})
-
-	handler := c.Handler(h.router)
-
-	h.http = &http.Server{
-		Addr:           fmt.Sprintf("%s:%d", h.opts.Host, h.opts.Port),
-		Handler:        handler,
-		ReadTimeout:    10 * time.Second,
-		WriteTimeout:   10 * time.Second,
-		MaxHeaderBytes: 1 << 20,
-	}
-
 	return h.http.ListenAndServeTLS(certFile, keyFile)
 }
 
 // Stop stops the HTTP server
 func (h *HTTPServer) Stop() error {
 	return h.http.Close()
+}
+
+func newHTTPServer(h *HTTPServer) (*http.Server, error) {
+	err := h.registerHandlers()
+	if err != nil {
+		return nil, err
+	}
+	handler := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowCredentials: true,
+	}).Handler(h.router)
+	return &http.Server{
+		Addr:           fmt.Sprintf("%s:%d", h.opts.Host, h.opts.Port),
+		Handler:        handler,
+		ReadTimeout:    10 * time.Second,
+		WriteTimeout:   10 * time.Second,
+		MaxHeaderBytes: 1 << 20,
+	}, nil
 }
